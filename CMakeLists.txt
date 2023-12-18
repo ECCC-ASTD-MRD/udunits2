@@ -224,7 +224,7 @@ texi_doc(udunits2.texi version.texi COPYRIGHT)
 # Install CHANGE_LOG and COPYRIGHT
 install(FILES "${CMAKE_SOURCE_DIR}/CHANGE_LOG" DESTINATION
             ${CMAKE_INSTALL_DOCDIR})
-install(FILES "${CMAKE_SOURCE_DIR}/COPYRIGHT" DESTINATION
+install(FILES "${PROJECT_SOURCE_DIR}/COPYRIGHT" DESTINATION
             ${CMAKE_INSTALL_DOCDIR})
 
 # Test the installation
@@ -236,81 +236,81 @@ ENDIF()
 ADD_CUSTOM_TARGET(install_test "${util}" -A -H km -W m
     COMMENT "Checking installation...")
 
-# Create an installer
-INCLUDE(InstallRequiredSystemLibraries)
-# Apparently, CMAKE_SYSTEM_PROCESSOR can't be overridden via the "-D..." option.
-IF (WIN32)
-    SET(CPACK_GENERATOR "NSIS")
-    GET_FILENAME_COMPONENT(CPACK_NSIS_INSTALL_ROOT "${CMAKE_INSTALL_PREFIX}" PATH)
-    GET_FILENAME_COMPONENT(CPACK_PACKAGE_INSTALL_DIRECTORY "${CMAKE_INSTALL_PREFIX}" NAME)
-    STRING(REGEX REPLACE "/" "\\\\" CPACK_PACKAGE_INSTALL_DIRECTORY
-        "${CPACK_PACKAGE_INSTALL_DIRECTORY}")
-    SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} UDUNITS-2")
-    SET(CPACK_NSIS_HELP_LINK "http://www.unidata.ucar.edu/software/udunits")
-    SET(CPACK_NSIS_MODIFY_PATH ON)
-    SET(CPACK_NSIS_URL_INFO_ABOUT "${CPACK_NSIS_HELP_LINK}")
-#   # There is a bug in NSI that does not handle full unix paths properly. Make
-#   # sure there is at least one set of four (4) backslashes.
-#   SET(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
-#   SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
-ENDIF()
+# # Create an installer
+# INCLUDE(InstallRequiredSystemLibraries)
+# # Apparently, CMAKE_SYSTEM_PROCESSOR can't be overridden via the "-D..." option.
+# IF (WIN32)
+#     SET(CPACK_GENERATOR "NSIS")
+#     GET_FILENAME_COMPONENT(CPACK_NSIS_INSTALL_ROOT "${CMAKE_INSTALL_PREFIX}" PATH)
+#     GET_FILENAME_COMPONENT(CPACK_PACKAGE_INSTALL_DIRECTORY "${CMAKE_INSTALL_PREFIX}" NAME)
+#     STRING(REGEX REPLACE "/" "\\\\" CPACK_PACKAGE_INSTALL_DIRECTORY
+#         "${CPACK_PACKAGE_INSTALL_DIRECTORY}")
+#     SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} UDUNITS-2")
+#     SET(CPACK_NSIS_HELP_LINK "http://www.unidata.ucar.edu/software/udunits")
+#     SET(CPACK_NSIS_MODIFY_PATH ON)
+#     SET(CPACK_NSIS_URL_INFO_ABOUT "${CPACK_NSIS_HELP_LINK}")
+# #   # There is a bug in NSI that does not handle full unix paths properly. Make
+# #   # sure there is at least one set of four (4) backslashes.
+# #   SET(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
+# #   SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
+# ENDIF()
 
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "expat, libexpat-dev")
-SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "${CMAKE_HOST_SYSTEM_PROCESSOR}")
-SET(CPACK_RPM_PACKAGE_REQUIRES "expat, expat-devel")
-SET(CPACK_RPM_PACKAGE_PROVIDES "udunits2(1), libudunits2, udunits2.h, converter.h")
+# SET(CPACK_DEBIAN_PACKAGE_DEPENDS "expat, libexpat-dev")
+# SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "${CMAKE_HOST_SYSTEM_PROCESSOR}")
+# SET(CPACK_RPM_PACKAGE_REQUIRES "expat, expat-devel")
+# SET(CPACK_RPM_PACKAGE_PROVIDES "udunits2(1), libudunits2, udunits2.h, converter.h")
 
-SET(CPACK_PACKAGE_FILE_NAME
-        "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${CMAKE_HOST_SYSTEM_PROCESSOR}")
-SET(CPACK_SOURCE_PACKAGE_FILE_NAME 
-        "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}")
-SET(CPACK_PACKAGE_CONTACT "support-udunits@unidata.ucar.edu")
-SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README")
-SET(CPACK_PACKAGE_EXECUTABLES "udunits2")
-SET(CPACK_PACKAGE_VENDOR "University Corporation for Atmospheric Research")
-SET(CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
-SET(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README")
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYRIGHT")
-SET(CPACK_PACKAGE_RELOCATABLE "ON")
-SET(CPACK_GENERATOR "RPM;DEB")
+# SET(CPACK_PACKAGE_FILE_NAME
+#         "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${CMAKE_HOST_SYSTEM_PROCESSOR}")
+# SET(CPACK_SOURCE_PACKAGE_FILE_NAME 
+#         "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}")
+# SET(CPACK_PACKAGE_CONTACT "support-udunits@unidata.ucar.edu")
+# SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README")
+# SET(CPACK_PACKAGE_EXECUTABLES "udunits2")
+# SET(CPACK_PACKAGE_VENDOR "University Corporation for Atmospheric Research")
+# SET(CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
+# SET(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README")
+# SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYRIGHT")
+# SET(CPACK_PACKAGE_RELOCATABLE "ON")
+# SET(CPACK_GENERATOR "RPM;DEB")
 
-SET(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
-set(CPACK_SOURCE_IGNORE_FILES
-        /\\.
-        ~$
-        \\.t2p/
-        \\.o$
-        \\.lo$
-        \\.la$
-        \\.libs/
-        /test/
-        /autom4te\\.cache/
-        /build/
-        /conda\\.recipe/
-        /consistent$
-        /udunits2$
-        \\.log$
-        /appveyor\\.yml$
-        /BACKLOG$
-        /build\\.gradle$
-        /check.*$
-        /commit$
-        /config\\.status$
-        /dev-makefile$
-        /Makefile$
-        /publish$
-        /push$
-        /scan$
-        /stamp-h1$
-        /t.t$
-        \\.gz$
-        \\.rpm$
-        /yum-upload$
-)
+# SET(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
+# set(CPACK_SOURCE_IGNORE_FILES
+#         /\\.
+#         ~$
+#         \\.t2p/
+#         \\.o$
+#         \\.lo$
+#         \\.la$
+#         \\.libs/
+#         /test/
+#         /autom4te\\.cache/
+#         /build/
+#         /conda\\.recipe/
+#         /consistent$
+#         /udunits2$
+#         \\.log$
+#         /appveyor\\.yml$
+#         /BACKLOG$
+#         /build\\.gradle$
+#         /check.*$
+#         /commit$
+#         /config\\.status$
+#         /dev-makefile$
+#         /Makefile$
+#         /publish$
+#         /push$
+#         /scan$
+#         /stamp-h1$
+#         /t.t$
+#         \\.gz$
+#         \\.rpm$
+#         /yum-upload$
+# )
 
-SET(CPACK_VERBATIM_VARIABLES YES)
-# The following causes cpack(1) to fail
-INCLUDE(CPack)
-#include(UseRPMTools)
-#    if(RPMTools_ADD_RPM_TARGETS("udunits"))
-#endif()
+# SET(CPACK_VERBATIM_VARIABLES YES)
+# # The following causes cpack(1) to fail
+# INCLUDE(CPack)
+# #include(UseRPMTools)
+# #    if(RPMTools_ADD_RPM_TARGETS("udunits"))
+# #endif()
