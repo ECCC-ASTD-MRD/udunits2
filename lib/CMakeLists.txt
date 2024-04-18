@@ -59,24 +59,25 @@ if(MSVC)
 	tsearch.c tsearch.h udunits_snprintf.c)
 endif()
 
-add_library(libudunits2
-	${libudunits2_src})	
-set_target_properties(libudunits2 PROPERTIES LIBRARY_OUTPUT_NAME udunits2)
-set_target_properties(libudunits2 PROPERTIES ARCHIVE_OUTPUT_NAME udunits2)
-set_target_properties(libudunits2 PROPERTIES RUNTIME_OUTPUT_NAME udunits2)
-target_link_libraries(libudunits2 ${EXPAT_LIBRARIES})
-target_link_libraries(libudunits2 ${MATH_LIBRARY})
-target_link_libraries(libudunits2 ${CMAKE_DL_LIBS})
+add_library(libudunits2-static STATIC ${libudunits2_src})	
+target_link_libraries(libudunits2-static ${EXPAT_LIBRARIES} ${MATH_LIBRARY})
+
+add_library(libudunits2-shared SHARED $<TARGET_OBJECTS:libudunits2-static>)	
+set_target_properties(libudunits2-static libudunits2-shared PROPERTIES
+    LIBRARY_OUTPUT_NAME udunits2
+    ARCHIVE_OUTPUT_NAME udunits2
+    RUNTIME_OUTPUT_NAME udunits2)
+target_link_libraries(libudunits2-shared ${EXPAT_LIBRARIES} ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
+add_library(libudunits2 ALIAS libudunits2-shared)
 
 IF(MSVC)
-	SET_TARGET_PROPERTIES(libudunits2 PROPERTIES
-	LINK_FLAGS_DEBUG " /NODEFAULTLIB:MSVCRT"
+	SET_TARGET_PROPERTIES(libudunits2-static libudunits2-shared PROPERTIES	LINK_FLAGS_DEBUG " /NODEFAULTLIB:MSVCRT"
 )
 ENDIF()
 
 if (CUNIT_LIBRARY)
     add_executable(testUnits testUnits.c)
-    target_link_libraries (testUnits libudunits2)
+    target_link_libraries (testUnits libudunits2-shared)
     target_link_libraries (testUnits ${CUNIT_LIBRARY})
     add_test(
         NAME testUnits
@@ -86,7 +87,11 @@ endif()
 # The documentation is in multiple texinfo(5) format files
 #texi_doc(udunits2lib.texi ${CMAKE_SOURCE_DIR}/COPYRIGHT)
     
-install(TARGETS libudunits2 EXPORT udunits2-targets
+install(TARGETS libudunits2-static EXPORT udunits2-targets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin)
+install(TARGETS libudunits2-shared EXPORT udunits2-targets
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin)
