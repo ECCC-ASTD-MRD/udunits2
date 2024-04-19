@@ -60,7 +60,7 @@ if(MSVC)
 endif()
 
 add_library(libudunits2-static STATIC ${libudunits2_src})	
-target_link_libraries(libudunits2-static ${EXPAT_LIBRARIES} ${MATH_LIBRARY})
+target_link_libraries(libudunits2-static ${EXPAT_LIBRARIES} ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
 
 add_library(libudunits2-shared SHARED $<TARGET_OBJECTS:libudunits2-static>)	
 set_target_properties(libudunits2-static libudunits2-shared PROPERTIES
