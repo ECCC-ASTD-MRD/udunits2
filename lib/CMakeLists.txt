@@ -61,8 +61,10 @@ endif()
 
 add_library(libudunits2-static STATIC ${libudunits2_src})	
 target_link_libraries(libudunits2-static ${EXPAT_LIBRARIES} ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
+target_compile_options(libudunits2-static PUBLIC -fpic)
 
 add_library(libudunits2-shared SHARED $<TARGET_OBJECTS:libudunits2-static>)	
+target_compile_options(libudunits2-shared PUBLIC -fpic)
 set_target_properties(libudunits2-static libudunits2-shared PROPERTIES
     LIBRARY_OUTPUT_NAME udunits2
     ARCHIVE_OUTPUT_NAME udunits2

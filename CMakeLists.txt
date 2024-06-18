@@ -8,34 +8,12 @@ set(CMAKE_PROJECT_HOMEPAGE_URL https://www.unidata.ucar.edu/software/udunits)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/.." CACHE PATH
-        "Installation root directory" FORCE)
-endif()
-
 # Ensure a path in the format common to both Unix and MinGW.
 FUNCTION(to_common_path input result)
     FILE(TO_NATIVE_PATH ${input} tmp)
     STRING(REGEX REPLACE "^(.):" "/\\1" tmp ${tmp})
     SET(${result} ${tmp} PARENT_SCOPE)
 ENDFUNCTION(to_common_path)
-
-# Build a shared library by default
-INCLUDE(GenerateExportHeader)
-option(BUILD_SHARED_LIBS "Build a shared library" ON)
-if(BUILD_SHARED_LIBS)
-    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-    IF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-        set(CMAKE_BUILD_RPATH "$ORIGIN/../lib")
-        set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-    ELSEIF(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-        set(CMAKE_BUILD_RPATH "@executable_path/../../lib")
-        set(CMAKE_INSTALL_RPATH "@executable_path/../../lib")
-    ELSE()
-        MESSAGE(WARNING "Relocatable binary distribution is not supported for "
-                "O/S \"${CMAKE_SYSTEM_NAME}\"")
-    ENDIF()
-endif()
 
 # A little bit of Windows/Visual Studio housekeeping.
 IF(MSVC)
