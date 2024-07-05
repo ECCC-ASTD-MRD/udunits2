@@ -67,27 +67,22 @@ set_target_properties(libudunits2-static PROPERTIES
     ARCHIVE_OUTPUT_NAME udunits2
     RUNTIME_OUTPUT_NAME udunits2)
 
-if (NOT BUILD_SHARED_LIBS)
-    add_library(libudunits2 ALIAS libudunits2-static)
-endif()
 
-if (BUILD_SHARED_LIBS)
-    add_library(libudunits2-shared SHARED $<TARGET_OBJECTS:libudunits2-static>)	
-    target_compile_options(libudunits2-shared PUBLIC -fpic)
-    set_target_properties(libudunits2-shared PROPERTIES
-        LIBRARY_OUTPUT_NAME udunits2
-        ARCHIVE_OUTPUT_NAME udunits2
-        RUNTIME_OUTPUT_NAME udunits2)
-    target_link_libraries(libudunits2-shared ${EXPAT_LIBRARIES} ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
-    add_library(libudunits2 ALIAS libudunits2-shared)
+add_library(libudunits2-shared SHARED $<TARGET_OBJECTS:libudunits2-static>)	
+target_compile_options(libudunits2-shared PUBLIC -fpic)
+set_target_properties(libudunits2-shared PROPERTIES
+    LIBRARY_OUTPUT_NAME udunits2
+    ARCHIVE_OUTPUT_NAME udunits2
+    RUNTIME_OUTPUT_NAME udunits2)
+target_link_libraries(libudunits2-shared ${EXPAT_LIBRARIES} ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
+add_library(libudunits2 ALIAS libudunits2-shared)
 
-    IF(MSVC)
-        SET_TARGET_PROPERTIES(libudunits2-static libudunits2-shared PROPERTIES	LINK_FLAGS_DEBUG " /NODEFAULTLIB:MSVCRT"
-    )
-    ENDIF()
-endif()
+IF(MSVC)
+    SET_TARGET_PROPERTIES(libudunits2-static libudunits2-shared PROPERTIES	LINK_FLAGS_DEBUG " /NODEFAULTLIB:MSVCRT"
+)
+ENDIF()
 
-if (CUNIT_LIBRARY AND BUILD_SHARED_LIBS)
+if (CUNIT_LIBRARY)
     add_executable(testUnits testUnits.c)
     target_link_libraries (testUnits libudunits2-shared)
     target_link_libraries (testUnits ${CUNIT_LIBRARY})
@@ -104,12 +99,10 @@ install(TARGETS libudunits2-static EXPORT udunits2-targets
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin)
 
-if (BUILD_SHARED_LIBS)
-    install(TARGETS libudunits2-shared EXPORT udunits2-targets
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        RUNTIME DESTINATION bin)
-endif()
+install(TARGETS libudunits2-shared EXPORT udunits2-targets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin)
 
 install(FILES udunits2.h converter.h DESTINATION include)
 install(FILES
