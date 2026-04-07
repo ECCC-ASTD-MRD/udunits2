@@ -1472,7 +1472,7 @@ productAcceptVisitor(
     void* const			arg)
 {
     int		count = unit->product.count;
-    BasicUnit**	basicUnits = malloc(sizeof(BasicUnit*)*count);
+    BasicUnit**	basicUnits = calloc(count, sizeof(BasicUnit*));
 
     assert(unit != NULL);
     assert(IS_PRODUCT(unit));
