@@ -60,7 +60,7 @@ if(MSVC)
 endif()
 
 add_library(libudunits2-static STATIC ${libudunits2_src})	
-target_link_libraries(libudunits2-static PUBLIC ${EXPAT_LIBRARIES} ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
+target_link_libraries(libudunits2-static PUBLIC EXPAT::EXPAT ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
 target_compile_options(libudunits2-static PUBLIC -fpic)
 set_target_properties(libudunits2-static PROPERTIES
     LIBRARY_OUTPUT_NAME udunits2
@@ -74,7 +74,7 @@ set_target_properties(libudunits2-shared PROPERTIES
     LIBRARY_OUTPUT_NAME udunits2
     ARCHIVE_OUTPUT_NAME udunits2
     RUNTIME_OUTPUT_NAME udunits2)
-target_link_libraries(libudunits2-shared ${EXPAT_LIBRARIES} ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
+target_link_libraries(libudunits2-shared EXPAT::EXPAT ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
 add_library(libudunits2 ALIAS libudunits2-shared)
 
 IF(MSVC)

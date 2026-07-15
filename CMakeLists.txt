@@ -159,13 +159,8 @@ ENDIF()
 
 # The EXPAT library, which implements a SAX XML parser, is used to parse the
 # units database
-INCLUDE(FindEXPAT)
-IF(NOT EXPAT_FOUND)
-    MESSAGE(FATAL_ERROR "Unable to find an EXPAT library.")
-    IF(NOT EXPAT_INCLUDE_DIRS)
-        MESSAGE(FATAL_ERROR "Unable to find an EXPAT header-file.")
-    ENDIF()
-ENDIF()
+set(EXPAT_USE_STATIC_LIBS TRUE)
+find_package(EXPAT REQUIRED)
 
 # The CUnit library is used for unit-testing
 FIND_LIBRARY(CUNIT_LIBRARY cunit)
