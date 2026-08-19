@@ -1,12 +1,7 @@
-include_directories ("${PROJECT_SOURCE_DIR}/lib")
-
 IF(BUILD_SHARED_LIBS AND MSVC)
  REMOVE_DEFINITIONS(-DDLL_EXPORT)
  REMOVE_DEFINITIONS(-DDLL_UDUNITS2)
 ENDIF()
-
-
-link_directories(${PROJECT_BINARY_DIR}/lib)
 
 set(udunits2_SRC udunits2.c)
 
@@ -14,7 +9,6 @@ set(udunits2_SRC udunits2.c)
 IF(MSVC)
    set(udunits2_SRC ${udunits2_SRC} XGetOpt.c XGetOpt.h)
 ENDIF()
-
 
 add_executable(udunits2 ${udunits2_SRC})
 

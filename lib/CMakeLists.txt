@@ -1,16 +1,8 @@
-INCLUDE_DIRECTORIES("." "${CMAKE_BINARY_DIR}")
-INCLUDE_DIRECTORIES("${EXPAT_INCLUDE_DIRS}")
-IF (CUNIT_INCLUDE_DIR)
-    INCLUDE_DIRECTORIES("${CUNIT_INCLUDE_DIR}")
-ENDIF()
-
 IF(YY_NO_UNISTD_H)
     ADD_DEFINITIONS(-DYY_NO_UNISTD_H)
 ENDIF(YY_NO_UNISTD_H)
 
-##
 # Check to see if we have flex and bison.
-##
 FIND_PROGRAM(UD_FLEX NAMES flex)
 FIND_PROGRAM(UD_BISON NAMES bison)
 
@@ -60,7 +52,7 @@ if(MSVC)
 endif()
 
 add_library(libudunits2-static STATIC ${libudunits2_src})	
-target_link_libraries(libudunits2-static PUBLIC ${EXPAT_LIBRARIES} ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
+target_link_libraries(libudunits2-static PUBLIC EXPAT::EXPAT ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
 target_compile_options(libudunits2-static PUBLIC -fpic)
 set_target_properties(libudunits2-static PROPERTIES
     LIBRARY_OUTPUT_NAME udunits2
@@ -74,12 +66,21 @@ set_target_properties(libudunits2-shared PROPERTIES
     LIBRARY_OUTPUT_NAME udunits2
     ARCHIVE_OUTPUT_NAME udunits2
     RUNTIME_OUTPUT_NAME udunits2)
-target_link_libraries(libudunits2-shared ${EXPAT_LIBRARIES} ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
+target_link_libraries(libudunits2-shared EXPAT::EXPAT ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
 add_library(libudunits2 ALIAS libudunits2-shared)
 
+foreach(target IN ITEMS libudunits2-static libudunits2-shared)
+    target_include_directories(${target} PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_CURRENT_BINARY_DIR}>"
+        $<INSTALL_INTERFACE:include>)
+
+    if(CUNIT_INCLUDE_DIR)
+        target_include_directories(${target} PRIVATE "${CUNIT_INCLUDE_DIR}")
+    endif()
+endforeach()
+
 IF(MSVC)
-    SET_TARGET_PROPERTIES(libudunits2-static libudunits2-shared PROPERTIES	LINK_FLAGS_DEBUG " /NODEFAULTLIB:MSVCRT"
-)
+    SET_TARGET_PROPERTIES(libudunits2-static libudunits2-shared PROPERTIES LINK_FLAGS_DEBUG " /NODEFAULTLIB:MSVCRT")
 ENDIF()
 
 if (CUNIT_LIBRARY)
@@ -93,7 +94,7 @@ endif()
 
 # The documentation is in multiple texinfo(5) format files
 #texi_doc(udunits2lib.texi ${CMAKE_SOURCE_DIR}/COPYRIGHT)
-    
+
 install(TARGETS libudunits2-static EXPORT udunits2-targets
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
