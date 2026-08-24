@@ -51,7 +51,7 @@ if(MSVC)
 	tsearch.c tsearch.h udunits_snprintf.c)
 endif()
 
-add_library(libudunits2-static STATIC ${libudunits2_src})	
+add_library(libudunits2-static STATIC ${libudunits2_src})
 target_link_libraries(libudunits2-static PUBLIC EXPAT::EXPAT ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
 target_compile_options(libudunits2-static PUBLIC -fpic)
 set_target_properties(libudunits2-static PROPERTIES
@@ -59,14 +59,13 @@ set_target_properties(libudunits2-static PROPERTIES
     ARCHIVE_OUTPUT_NAME udunits2
     RUNTIME_OUTPUT_NAME udunits2)
 
-
 add_library(libudunits2-shared SHARED $<TARGET_OBJECTS:libudunits2-static>)	
 target_compile_options(libudunits2-shared PUBLIC -fpic)
 set_target_properties(libudunits2-shared PROPERTIES
     LIBRARY_OUTPUT_NAME udunits2
     ARCHIVE_OUTPUT_NAME udunits2
     RUNTIME_OUTPUT_NAME udunits2)
-target_link_libraries(libudunits2-shared EXPAT::EXPAT ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
+target_link_libraries(libudunits2-shared PUBLIC EXPAT::EXPAT ${MATH_LIBRARY} ${CMAKE_DL_LIBS})
 add_library(libudunits2 ALIAS libudunits2-shared)
 
 foreach(target IN ITEMS libudunits2-static libudunits2-shared)
@@ -95,15 +94,12 @@ endif()
 # The documentation is in multiple texinfo(5) format files
 #texi_doc(udunits2lib.texi ${CMAKE_SOURCE_DIR}/COPYRIGHT)
 
-install(TARGETS libudunits2-static EXPORT udunits2-targets
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin)
-
-install(TARGETS libudunits2-shared EXPORT udunits2-targets
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin)
+foreach(target IN ITEMS libudunits2-static libudunits2-shared)
+    install(TARGETS ${target} EXPORT udunits2-targets
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
+endforeach()
 
 install(FILES udunits2.h converter.h DESTINATION include)
 install(FILES
@@ -114,3 +110,7 @@ install(FILES
         udunits2-derived.xml
         udunits2-prefixes.xml
     DESTINATION share/udunits)
+
+install(EXPORT udunits2-targets
+        NAMESPACE udunits2::
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}-${PROJECT_VERSION}")

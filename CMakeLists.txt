@@ -287,3 +287,9 @@ ADD_CUSTOM_TARGET(install_test "${util}" -A -H km -W m
 # #include(UseRPMTools)
 # #    if(RPMTools_ADD_RPM_TARGETS("udunits"))
 # #endif()
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
