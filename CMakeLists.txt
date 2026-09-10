@@ -75,6 +75,7 @@ enable_testing()
 # The following fails on Gilda:
 #INCLUDE(GNUInstallDirs)
 # Hence:
+set(CMAKE_INSTALL_LIBDIR lib)
 SET(CMAKE_INSTALL_INFODIR share/info)
 SET(CMAKE_INSTALL_DOCDIR share/doc/udunits)
 
@@ -289,7 +290,19 @@ ADD_CUSTOM_TARGET(install_test "${util}" -A -H km -W m
 # #endif()
 
 include(CMakePackageConfigHelpers)
+
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}-${PROJECT_VERSION}")
+
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    COMPATIBILITY SameMajorVersion
+)
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}-${PROJECT_VERSION}"
+)

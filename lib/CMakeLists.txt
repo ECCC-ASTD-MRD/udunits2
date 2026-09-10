@@ -94,12 +94,14 @@ endif()
 # The documentation is in multiple texinfo(5) format files
 #texi_doc(udunits2lib.texi ${CMAKE_SOURCE_DIR}/COPYRIGHT)
 
-foreach(target IN ITEMS libudunits2-static libudunits2-shared)
-    install(TARGETS ${target} EXPORT udunits2-targets
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        RUNTIME DESTINATION bin)
-endforeach()
+install(TARGETS libudunits2-static libudunits2-shared EXPORT udunits-targets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin)
+
+install(EXPORT udunits-targets
+    NAMESPACE udunits::
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}-${PROJECT_VERSION}")
 
 install(FILES udunits2.h converter.h DESTINATION include)
 install(FILES
@@ -110,7 +112,3 @@ install(FILES
         udunits2-derived.xml
         udunits2-prefixes.xml
     DESTINATION share/udunits)
-
-install(EXPORT udunits2-targets
-        NAMESPACE udunits2::
-        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}-${PROJECT_VERSION}")
