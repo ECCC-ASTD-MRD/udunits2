@@ -118,9 +118,9 @@ FUNCTION(texi_doc input)
         MESSAGE("Texinfo-file \"${common_input}\" will not be processed.")
     ELSE()
         add_custom_command(
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-            OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/${file}.info"
-                "${CMAKE_CURRENT_SOURCE_DIR}/${file}.html"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${file}.info"
+                "${CMAKE_CURRENT_BINARY_DIR}/${file}.html"
             MAIN_DEPENDENCY ${input}
             DEPENDS ${ARGN}
             COMMAND ${MAKEINFO} -o ${file}.info -I ${common_source_dir}
@@ -131,11 +131,11 @@ FUNCTION(texi_doc input)
             COMMENT "Creating documentation from ${common_input}")
     ENDIF()
     add_custom_target(${file}_doc ALL
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${file}.info
-            ${CMAKE_CURRENT_SOURCE_DIR}/${file}.html)
-    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/${file}.info" DESTINATION
+        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${file}.info
+            ${CMAKE_CURRENT_BINARY_DIR}/${file}.html)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${file}.info" DESTINATION
             ${CMAKE_INSTALL_INFODIR})
-    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/${file}.html" DESTINATION
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${file}.html" DESTINATION
             ${CMAKE_INSTALL_DOCDIR})
     if(INSTALL_INFO)
         SET(outpath "${common_install_infodir}/${file}.info")
@@ -193,7 +193,8 @@ ENDIF()
 ADD_SUBDIRECTORY (prog)
 
 # The documentation is in texinfo(5) format
-texi_doc(udunits2.texi version.texi COPYRIGHT)
+texi_doc(${CMAKE_CURRENT_SOURCE_DIR}/udunits2.texi)
+texi_doc(${CMAKE_CURRENT_SOURCE_DIR}/version.texi)
 
 # Install CHANGE_LOG and COPYRIGHT
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/CHANGE_LOG" DESTINATION
